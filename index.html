@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador Econômico RPG</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <div id="tela-login" class="modal" style="display: block; background-color: rgba(0,0,0,0.95);">
+        <div class="modal-content" style="max-width: 400px; text-align: center; margin-top: 10%;">
+            <h2 style="color: #b8860b;">Acessar o Mundo</h2>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <input type="email" id="login-email" placeholder="Seu E-mail">
+            </div>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <input type="password" id="login-senha" placeholder="Sua Senha">
+            </div>
+            <div class="form-group" style="margin-bottom: 15px;" id="area-nome-personagem">
+                <input type="text" id="login-nome" placeholder="Nome do Personagem (Só p/ Cadastro)">
+                <small style="color:#aaa; font-size:11px;">* Só preencha o Nome se for criar uma nova conta.</small>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="fazerLogin()" class="btn-sucesso" style="flex: 1;">Entrar</button>
+                <button onclick="criarConta()" class="btn-auditoria" style="flex: 1;">Criar Conta</button>
+            </div>
+            <p id="msg-erro-login" style="color: #ff4d4d; margin-top: 15px; font-size: 13px;"></p>
+        </div>
+    </div>
+
+    <header id="header-app" style="display: none;">
+        <h1>Painel de Controle Mundial</h1>
+        <div class="login-simulador">
+            <span style="color: #ccc; margin-right: 15px;">👤 Logado como: <strong id="nome-usuario-logado" style="color: #4a86e8;"></strong></span>
+            <button onclick="fazerLogoff()" class="btn-perigoso" style="padding: 5px 10px; font-size: 12px;">Sair</button>
+        </div>
+    </header>
+
+    <main id="main-app" style="display: none;">
+        <div class="painel-macroeconomia">
+            <section class="cofre-box governo-mundial">
+                <div class="cofre-header">
+                    <span class="icone-faccao">⚓</span>
+                    <span class="titulo-faccao">MARY GEOISE</span>
+                </div>
+                <div class="valor-dinheiro" id="saldo-governo">B$ 0</div>
+                <p class="legenda">Gasto Passivo: 5%</p>
+            </section>
+            
+            <section class="cofre-box revolucionarios">
+                <div class="cofre-header">
+                    <span class="icone-faccao">✊</span>
+                    <span class="titulo-faccao">EXÉRCITO REVO.</span>
+                </div>
+                <div class="valor-dinheiro" id="saldo-revo">B$ 0</div>
+                <p class="legenda">Gasto Passivo: 8%</p>
+            </section>
+            
+            <section class="cofre-box submundo">
+                <div class="cofre-header">
+                    <span class="icone-faccao">🕶️</span>
+                    <span class="titulo-faccao">SUBMUNDO (MÁFIA)</span>
+                </div>
+                <div class="valor-dinheiro" id="saldo-submundo">B$ 0</div>
+                <p class="legenda">Gasto Passivo: 10%</p>
+            </section>
+            
+            <section class="cofre-box mercado-circulante">
+                <div class="cofre-header">
+                    <span class="icone-faccao">⚖️</span>
+                    <span class="titulo-faccao">MERCADO CIRCULANTE</span>
+                </div>
+                <div class="valor-dinheiro" id="saldo-mercado">B$ 0</div>
+                <p class="legenda">Dinheiro Livre nas Fichas</p>
+            </section>
+        </div>
+
+        <section class="despesa-global-area admin-only">
+            <h3>💸 Caixa Global (Movimentar Dinheiro)</h3>
+            <div class="despesa-controles">
+                <label class="switch-container">
+                    <div class="switch">
+                        <input type="checkbox" id="tipo-transacao-global-toggle" checked onchange="alternarTextoSwitch()">
+                        <span class="slider round"></span>
+                    </div>
+                    <span id="texto-transacao" style="color: #58a6ff;">💸 Pagar (Cofre ➔ Mercado)</span>
+                </label>
+                <select id="origem-despesa">
+                    <option value="governo">Governo Mundial</option>
+                    <option value="revo">Fundo Revolucionário</option>
+                    <option value="submundo">Fundo do Submundo</option>
+                </select>
+                <input type="number" id="valor-despesa" placeholder="Valor (B$)">
+                <button onclick="registrarDespesa()">Confirmar Transação</button>
+            </div>
+        </section>
+
+        <section id="area-admin-acoes" class="admin-panel admin-only">
+            <h2>⚙️ Motor do Tempo e Auditoria</h2>
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button id="btn-virar-mes" onclick="processarMes()" class="btn-perigoso">⏳ Virar o Mês</button>
+                <button id="btn-desfazer-mes" onclick="desfazerMes()" class="btn-caixa" style="display: none; background-color: #e67e22; color: white;">↩️ Desfazer Mês</button>
+                
+                <button onclick="resetarMundoDev()" class="btn-perigoso" style="background-color: #8b0000; border: 1px solid red;">☢️ Resetar Mundo (Teste)</button>
+                
+                <button onclick="abrirFormIlha()" class="btn-sucesso">➕ Cadastrar Nova Ilha</button>
+                <button onclick="abrirAuditoria()" class="btn-auditoria">📜 Log de Auditoria</button>
+            </div>
+            <p id="log-flutuacao" class="log-text">Aguardando comando...</p>
+        </section>
+
+        <section id="painel-relatorio" class="relatorio-box admin-only" style="display: none;">
+            <h3>🧾 Relatório de Repasses do Mês</h3>
+            <div id="conteudo-relatorio"></div>
+        </section>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+            <h2>Territórios do Mundo</h2>
+            <div class="filtro-area" style="display: flex; gap: 10px;">
+                <input type="text" id="busca-nome" placeholder="🔍 Buscar por nome..." onkeyup="renderizarIlhas()">
+                <select id="filtro-regiao" onchange="renderizarIlhas()">
+                    <option value="Todas">🌍 Todas as Regiões</option>
+                    <option value="East Blue">East Blue</option>
+                    <option value="West Blue">West Blue</option>
+                    <option value="North Blue">North Blue</option>
+                    <option value="South Blue">South Blue</option>
+                    <option value="Paradise - Rota 1">Paradise - Rota 1</option>
+                    <option value="Paradise - Rota 2">Paradise - Rota 2</option>
+                    <option value="Paradise - Rota 3">Paradise - Rota 3</option>
+                    <option value="Paradise - Rota 4">Paradise - Rota 4</option>
+                    <option value="Sabaody / Red Line">Sabaody / Red Line</option>
+                    <option value="Novo Mundo">Novo Mundo</option>
+                    <option value="Calm Belt">Calm Belt</option>
+                </select>
+            </div>
+        </div>
+
+        <section id="lista-ilhas" class="grid-ilhas"></section>
+    </main>
+
+    <div id="modal-detalhes" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close-btn" onclick="fecharModal('modal-detalhes')">&times;</span>
+            <h2 id="modal-titulo"></h2>
+            <div id="modal-corpo"></div>
+            <div style="margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; text-align: center;">
+                <button id="btn-ver-historico" class="btn-auditoria" style="width: 100%;">📊 Ver Relatórios de Meses Anteriores</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-historico" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="close-btn" onclick="fecharModal('modal-historico')">&times;</span>
+            <h2 style="color: #4a86e8; border-bottom: 1px solid #333; padding-bottom: 10px;">📊 Histórico Econômico da Ilha</h2>
+            <div id="historico-corpo" class="log-container"></div>
+        </div>
+    </div>
+
+    <div id="modal-auditoria" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <span class="close-btn" onclick="fecharModal('modal-auditoria')">&times;</span>
+            <h2 style="color: #ff4d4d; border-bottom: 1px solid #333; padding-bottom: 10px;">📜 Registro de Auditoria</h2>
+            <div id="auditoria-corpo" class="terminal-log"></div>
+        </div>
+    </div>
+
+    <div id="modal-form-ilha" class="modal">
+        <div class="modal-content" style="max-width: 1000px;">
+            <span class="close-btn" onclick="fecharModal('modal-form-ilha')">&times;</span>
+            <h2 id="form-titulo">Cadastrar/Editar Ilha</h2>
+            
+            <div class="form-grid">
+                <div class="form-group"><label>Nome</label><input type="text" id="form-nome"></div>
+                <div class="form-group"><label>Governante ('Nenhum' se livre)</label><input type="text" id="form-lider"></div>
+                <div class="form-group"><label>Região do Mundo</label>
+                    <select id="form-regiao">
+                        <option value="East Blue">East Blue</option><option value="West Blue">West Blue</option><option value="North Blue">North Blue</option><option value="South Blue">South Blue</option><option value="Paradise - Rota 1">Paradise - Rota 1</option><option value="Paradise - Rota 2">Paradise - Rota 2</option><option value="Paradise - Rota 3">Paradise - Rota 3</option><option value="Paradise - Rota 4">Paradise - Rota 4</option><option value="Sabaody / Red Line">Sabaody / Red Line</option><option value="Novo Mundo" selected>Novo Mundo</option><option value="Calm Belt">Calm Belt</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Alinhamento Global</label>
+                    <select id="form-alinhamento">
+                        <option value="Independente">Independente</option><option value="Governo Mundial">Governo Mundial</option><option value="Revolucionário">Exército Revolucionário</option><option value="Submundo">Submundo</option><option value="Pirata">Território Pirata</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Estabilidade/Saúde (%)</label><input type="number" id="form-saude" min="0" max="100" value="100"></div>
+                <div class="form-group"><label>Densidade</label>
+                    <select id="form-densidade"><option value="Baixa">Baixa</option><option value="Média">Média</option><option value="Alta">Alta</option></select>
+                </div>
+                <div class="form-group"><label>Gestão</label>
+                    <select id="form-gestao"><option value="Neutra">Neutra</option><option value="Benevolente">Benevolente</option><option value="Tirânica">Tirânica</option><option value="Extrativista">Extrativista</option><option value="Militarizada">Militarizada</option><option value="Caótica">Caótica</option></select>
+                </div>
+                <div class="form-group"><label>Imposto do Governante (%)</label><input type="number" id="form-imposto" value="0"></div>
+                <div class="form-group"><label>Renda Urbana Base (B$)</label><input type="number" id="form-renda" value="0"></div>
+            </div>
+
+            <hr style="border: 1px solid #333; margin: 20px 0;">
+
+            <h3 style="color: #b8860b; margin-bottom: 10px;">🛠️ Addons e Modificadores Narrativos</h3>
+            <div id="lista-mods-form" style="margin-bottom: 15px;"></div>
+            <div style="background: #111; padding: 15px; border-radius: 8px;">
+                <input type="hidden" id="edit-mod-index" value="-1">
+                <div class="form-group" style="margin-bottom: 10px;"><label>Nome / Descrição Narrativa</label><input type="text" id="add-mod-nome" placeholder="Ex: Porto Nível 2" style="width: 100%;"></div>
+                <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+                    <div class="form-group" style="flex: 1; min-width: 80px;"><label>Manu (%)</label><input type="number" id="add-mod-manu-perc" value="0"></div>
+                    <div class="form-group" style="flex: 1; min-width: 80px;"><label>Renda (%)</label><input type="number" id="add-mod-renda-perc" value="0"></div>
+                    <div class="form-group" style="flex: 1; min-width: 80px;"><label>Prod (%)</label><input type="number" id="add-mod-prod-perc" value="0"></div>
+                    <div class="form-group" style="flex: 1; min-width: 80px;"><label>Saúde (+/-)</label><input type="number" id="add-mod-estabilidade" value="0"></div>
+                    <div class="form-group" style="flex: 1; min-width: 100px;"><label>Manu Fixo (B$)</label><input type="number" id="add-mod-manu-fixo" value="0"></div>
+                    <div class="form-group" style="flex: 1; min-width: 100px;"><label>Renda Fixa (B$)</label><input type="number" id="add-mod-renda-fixo" value="0"></div>
+                    <button onclick="adicionarModMemoria()" class="btn-sucesso" style="padding: 10px; min-width: 80px;" id="btn-salvar-mod">➕ Add</button>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid #333; margin: 20px 0;">
+
+            <h3 style="color: #4a86e8; margin-bottom: 10px;">💎 Recursos e Serviços</h3>
+            <div id="lista-recursos-form" style="margin-bottom: 15px;"></div>
+            <div style="background: #0d1117; padding: 15px; border-radius: 8px; border: 1px dashed #555;">
+                <input type="hidden" id="edit-rec-index" value="-1">
+                <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+                    <div class="form-group" style="flex: 2; min-width: 150px;"><label>Nome</label><input type="text" id="add-rec-nome"></div>
+                    
+                    <div class="form-group" style="flex: 1;"><label>Tipo</label>
+                        <select id="add-rec-tipo" onchange="verificarTipoRecurso()">
+                            <option value="Material">Material</option>
+                            <option value="Servico">Serviço</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" style="flex: 1;"><label>Foco</label>
+                        <select id="add-rec-foco">
+                            <option value="Global">Exportação</option>
+                            <option value="Local">Local</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" style="flex: 1;"><label>Qtd/Vagas Mês</label><input type="number" id="add-rec-prod"></div>
+                    <div class="form-group" style="flex: 1;"><label>Valor Base</label><input type="number" id="add-rec-valor"></div>
+                    <button onclick="adicionarRecursoMemoria()" class="btn-sucesso" style="padding: 10px; min-width: 80px;" id="btn-salvar-rec">➕ Add</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                <button onclick="excluirIlha()" class="btn-perigoso" id="btn-excluir-ilha" style="display:none; padding: 10px 20px;">🗑️ Excluir Ilha</button>
+                <button onclick="salvarIlha()" class="btn-sucesso" style="padding: 10px 20px; font-size: 18px; margin-left: auto;">💾 Salvar Configurações</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-cofre" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <span class="close-btn" onclick="fecharModal('modal-cofre')">&times;</span>
+            <h2 id="cofre-titulo" style="color: #2ecc71;">Caixa da Ilha</h2>
+            <p>Saldo: <strong id="cofre-saldo-atual" class="valor-dinheiro"></strong></p>
+            <input type="number" id="valor-transacao" placeholder="Valor (B$)" style="width: 100%; padding: 10px; margin-bottom: 10px; background: #111; color: white;">
+            <input type="text" id="motivo-transacao" placeholder="Motivo obrigatório (Ex: Compra Addon)" style="width: 100%; padding: 10px; margin-bottom: 15px; background: #111; color: white; border: 1px solid #4a86e8;">
+            <div style="display: flex; gap: 10px;">
+                <button onclick="transacaoCofre('retirar')" class="btn-perigoso" style="flex: 1;">⬇️ Retirar</button>
+                <button onclick="transacaoCofre('depositar')" class="btn-sucesso" style="flex: 1;">⬆️ Depositar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

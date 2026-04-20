@@ -203,14 +203,22 @@ function abrirHistoricoIlha(id) {
 function atualizarSaldosGlobais() {
     const isAdm = visaoAtual === "admin";
 
-    // Se for ADM, mostra o valor abreviado (Bi, Tri). 
-    // Se for Player, mostra o texto de sigilo.
-    document.getElementById("saldo-governo").innerText = isAdm ? formatarDinheiro(tesouroGoverno) : "B$ SIGILOSO";
-    document.getElementById("saldo-revo").innerText = isAdm ? formatarDinheiro(tesouroRevo) : "B$ SIGILOSO";
-    document.getElementById("saldo-submundo").innerText = isAdm ? formatarDinheiro(tesouroSubmundo) : "B$ SIGILOSO";
-    
-    // O Mercado Circulante geralmente é público, mas se quiser esconder também:
-    document.getElementById("saldo-mercado").innerText = isAdm ? formatarDinheiro(mercadoCirculante) : "B$ SIGILOSO";
+    // Função interna rápida para atualizar o texto e a classe
+    const setSaldo = (id, valor) => {
+        const el = document.getElementById(id);
+        if (isAdm) {
+            el.innerText = formatarDinheiro(valor);
+            el.classList.remove("texto-sigiloso"); // Remove o cinza, volta a cor da facção
+        } else {
+            el.innerText = "B$ SIGILOSO";
+            el.classList.add("texto-sigiloso"); // Deixa cinza pro player
+        }
+    };
+
+    setSaldo("saldo-governo", tesouroGoverno);
+    setSaldo("saldo-revo", tesouroRevo);
+    setSaldo("saldo-submundo", tesouroSubmundo);
+    setSaldo("saldo-mercado", mercadoCirculante);
 }
 
 function registrarDespesa() {
@@ -548,15 +556,6 @@ function editarRecursoMemoria(idx) {
 }
 function removerModMemoria(idx) { modsTemporarios.splice(idx, 1); renderizarRecursosForm(); }
 
-function adicionarRecursoMemoria() {
-    const idxEdit = parseInt(document.getElementById("edit-rec-index").value);
-    const nome = document.getElementById("add-rec-nome").value; const tipo = document.getElementById("add-rec-tipo").value; const foco = document.getElementById("add-rec-foco").value;
-    const prod = parseInt(document.getElementById("add-rec-prod").value); const valor = parseInt(document.getElementById("add-rec-valor").value);
-    if (!nome || isNaN(prod) || isNaN(valor)) return alert("Preencha corretamente.");
-    let novoRec = { nome, tipo, foco, producao_mensal: prod, estoque_acumulado: prod, estoque_transito: 0, valor_base: valor };
-    if (idxEdit >= 0) { novoRec.estoque_acumulado = recursosTemporarios[idxEdit].estoque_acumulado; novoRec.estoque_transito = recursosTemporarios[idxEdit].estoque_transito || 0; recursosTemporarios[idxEdit] = novoRec; } else { recursosTemporarios.push(novoRec); }
-    document.getElementById("add-rec-nome").value = ""; document.getElementById("add-rec-prod").value = ""; document.getElementById("add-rec-valor").value = ""; document.getElementById("edit-rec-index").value = "-1"; renderizarRecursosForm();
-}
 function editarRecursoMemoria(idx) {
     let rec = recursosTemporarios[idx];
     document.getElementById("add-rec-nome").value = rec.nome; document.getElementById("add-rec-tipo").value = rec.tipo; document.getElementById("add-rec-foco").value = rec.foco; document.getElementById("add-rec-prod").value = rec.producao_mensal; document.getElementById("add-rec-valor").value = rec.valor_base; document.getElementById("edit-rec-index").value = idx; 
@@ -759,11 +758,20 @@ function processarMes() {
     tesouroGoverno += tGov; tesouroRevo += tRev; tesouroSubmundo += tSub;
     contadorMesGlobal++;
     
+    // AQUI VOLTAMOS COM OS CARDS BONITOS NO RELATÓRIO
     const conteudo = document.getElementById("conteudo-relatorio");
-    let html = "<ul>"; let teve = false;
-    for (let lider in repasses) { html += `<li><strong>${lider}</strong>: +${formatarDinheiro(repasses[lider])}</li>`; teve = true; }
-    if (!teve) html += `<li style="color: #aaa; font-style: italic;">Nenhum Player lucrou.</li>`;
-    html += "</ul>";
+    let html = "<div class='grid-repasses'>"; let teve = false;
+    for (let lider in repasses) { 
+        html += `
+        <div class="repasse-card">
+            <span class="lider-nome">👤 ${lider}</span>
+            <span class="lider-valor">+${formatarDinheiro(repasses[lider])}</span>
+        </div>`; 
+        teve = true; 
+    }
+    if (!teve) html += `<div class="repasse-card nulo">Nenhum Player lucrou.</div>`;
+    html += "</div>";
+    
     conteudo.innerHTML = html; document.getElementById("painel-relatorio").style.display = "block";
 
     salvarNoBanco(); // <-- SALVA NA NUVEM E A TELA ATUALIZA SOZINHA

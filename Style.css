@@ -1,39 +1,24 @@
 /* =========================================
-   SOMA ZERO - GRAND LINE UI (FUNDO METAL + PAINÉIS)
+   SOMA ZERO - GRAND LINE UI
    ========================================= */
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
 
 :root {
     --bg-fundo: #080a0d; 
     --bg-card: #12161c;
-    --bg-header: #0d1014;
-    --borda-suave: #2a313b;
     --texto-principal: #d3d9e1;
     --texto-secundario: #8b949e;
-    
     --dinheiro-positivo: #3fb950;
     --dinheiro-negativo: #f85149;
-    --cor-ouro: #ffc93c;
-    --cor-ouro-glow: rgba(255, 201, 60, 0.4);
     --cor-acao: #58a6ff;
-    
+    --borda-suave: #2a313b;
     --faccao-governo: #388bfd;
-    --faccao-governo-glow: rgba(56, 139, 253, 0.3);
     --faccao-revo: #ff6b6b;
-    --faccao-revo-glow: rgba(255, 107, 107, 0.3);
-    --faccao-submundo: #74f2ac;
-    --faccao-submundo-glow: rgba(116, 242, 172, 0.3);
-    --faccao-pirata: #fcfcfc;
-    --faccao-pirata-glow: rgba(252, 252, 252, 0.1);
-    --faccao-independente: #8854d0;
-    --faccao-independente-glow: rgba(136, 84, 208, 0.2);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
-/* ================= 1. FUNDO DA PAREDE E MONITOR FIXO ================= */
-/* ================= 1. FUNDO DA PAREDE E MONITOR FIXO ================= */
+/* ================= 1. FUNDO E SCROLL ================= */
 body {
     background-color: var(--bg-fundo);
     background-image: url('Imagens/Fundo sem marca dagua grande.jpeg'); 
@@ -41,93 +26,56 @@ body {
     background-attachment: fixed;
     color: var(--texto-principal);
     line-height: 1.5;
-    
     height: 100vh; 
     overflow: hidden; 
     display: flex;
     flex-direction: column;
-    
-    /* A MÁGICA AQUI: Trocamos os pixels por unidades relativas.
-       Isso prende a interface no "vidro" da sua imagem independente do zoom.
-       (Se ficar alguns milímetros desalinhado, basta aumentar ou diminuir os números abaixo) */
-    padding-top: 9.3vh;    /* Proporção referente aos antigos 85px */
-    padding-bottom: 11.9vh; /* Proporção referente aos antigos 110px */
-    padding-left: 12vw;    /* Proporção referente aos antigos 232px */
-    padding-right: 12vw;   /* Proporção referente aos antigos 232px */
+    padding: 9.3vh 12vw 11.9vh 12vw;
 }
-/* Moldura de Sombra (Vignette) para foco central */
+
 body::after {
     content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     box-shadow: inset 0 0 150px rgba(0,0,0,0.9); pointer-events: none; z-index: 9999;
 }
 
-/* Scrollbar agora só aparece dentro do vidro */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--borda-suave); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--faccao-governo); }
 
-/* ================= 2. HEADER E ÁREA PRINCIPAL ================= */
-/* ================= 2. HEADER E ÁREA PRINCIPAL ================= */
+/* ================= 2. HEADER E MAIN ================= */
 header {
     background-color: rgba(13, 16, 20, 0.9); 
     padding: 15px 40px; 
-    
-    /* A MÁGICA DO ALINHAMENTO */
     display: flex; 
-    justify-content: center; /* Centraliza o título no meio exato da tela */
+    justify-content: center; 
     align-items: center; 
-    position: relative; /* Permite que o login fique preso na direita */
-    
+    position: relative; 
     border-bottom: 1px solid var(--borda-suave); 
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); 
     z-index: 500; 
     backdrop-filter: blur(10px);
-    flex-shrink: 0; 
     border-radius: 12px 12px 0 0; 
 }
 
-header h1 { 
-    font-size: 24px; 
-    font-weight: 900; 
-    letter-spacing: 2px; 
-    text-transform: uppercase; 
-    color: #95a5a6; /* Cinza Concreto que você pediu */
-    text-shadow: 0 2px 5px rgba(0,0,0,0.8); /* Dá uma profundidade no cinza */
-}
+header h1 { font-size: 24px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: #95a5a6; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
 
-.login-simulador {
-    position: absolute; /* Prende o botão de Sair e o Nome na direita */
-    right: 40px;
-    display: flex;
-    align-items: center;
-}
+.login-simulador { position: absolute; right: 40px; display: flex; align-items: center; }
 .login-simulador span { font-size: 13px; color: var(--texto-secundario); margin-right: 15px; }
 .login-simulador strong { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.4); }
 
-/* Main agora é a ÚNICA parte que rola a página */
 main {
-    flex-grow: 1; /* Ocupa todo o espaço que sobrar debaixo do Header */
-    overflow-y: auto; /* A BARRA DE ROLAGEM PASSA A EXISTIR SÓ AQUI DENTRO */
-    
+    flex-grow: 1; 
+    overflow-y: auto; 
     padding: 30px 40px;
     background: rgba(13, 17, 23, 0.7); backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.05); border-top: none;
-    border-radius: 0 0 12px 12px; /* Arredonda só as pontas de baixo */
+    border-radius: 0 0 12px 12px; 
     box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; z-index: 10;
 }
 
-/* ================= 3. COFRES (IMAGENS LOCAIS) ================= */
-/* ================= 3. COFRES ================= */
-/* ================= 3. COFRES (VERSÃO COMPACTA) ================= */
-.painel-macroeconomia { 
-    display: grid; 
-    /* Forçamos 4 colunas e diminuímos o espaço entre elas */
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 10px; 
-    margin-bottom: 25px; 
-    padding: 5px; 
-}
+/* ================= 3. COFRES GLOBAIS ================= */
+.painel-macroeconomia { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px; padding: 5px; }
 
 .cofre-box {
     background: none; border: none; border-radius: 0; 
@@ -135,115 +83,27 @@ main {
     text-align: center; position: relative; transition: all 0.3s ease;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); 
     display: flex; flex-direction: column; justify-content: center; align-items: center;
-    
-    /* Reduzimos o respiro interno para o texto não vazar */
-    padding-top: 3%;
-    padding-bottom: 3%;
-
-    max-width: 330px; /* 🎛️ TESTE MUDAR ESTE NÚMERO (ex: 280px, 300px, 350px) */
-    
-    /* 2. CENTRALIZADOR */
-    margin: 0 auto;
+    padding: 3% 5%; max-width: 330px; margin: 0 auto;
 }
 
-/* 2. AJUSTE DE PROPORÇÃO E ZONAS SEGURAS (REDUZIDAS) */
-.governo-mundial { 
-    background-image: url('Imagens/gov.png'); aspect-ratio: 997 / 316; 
-    padding-left: 18%; /* Reduzi o recuo para ganhar espaço pro número */
-    padding-right: 5%;
-}
-.revolucionarios { 
-    background-image: url('Imagens/Revo.png'); aspect-ratio: 1311 / 438; position: relative; 
-    padding-left: 22%; 
-    padding-right: 5%;
-}
-.submundo { 
-    background-image: url('Imagens/Mafioso.png'); aspect-ratio: 946 / 299;
-    padding-left: 5%;
-    padding-right: 18%; 
-}
-.mercado-circulante { 
-    background-image: url('Imagens/mercado.png'); aspect-ratio: 998 / 310;
-    padding-left: 5%; 
-    padding-right: 5%;
-}
+.governo-mundial { background-image: url('Imagens/gov.png'); aspect-ratio: 997 / 316; padding-left: 18%; }
+.revolucionarios { background-image: url('Imagens/Revo.png'); aspect-ratio: 1311 / 438; padding-left: 22%; }
+.submundo { background-image: url('Imagens/Mafioso.png'); aspect-ratio: 946 / 299; padding-right: 18%; }
+.mercado-circulante { background-image: url('Imagens/mercado.png'); aspect-ratio: 998 / 310; }
 
-/* HEADER DOS COFRES (Títulos Menores) */
-.cofre-header { 
-    display: flex; align-items: center; justify-content: center; 
-    gap: 5px; margin-bottom: 2px; z-index: 2; margin-top: -8px; 
-}
-.icone-faccao { font-size: 11px; opacity: 0.8; }
-.titulo-faccao { 
-    font-size: 10px; /* Reduzido de 13px */
-    font-weight: 800; letter-spacing: 1px; color: #fff; text-transform: uppercase; 
-}
-
-/* 3. O DINHEIRO (FONTE COMPACTA) */
-.valor-dinheiro { 
-    font-size: 18px; /* TUDO TRAVADO NUM TAMANHO PERFEITO E BONITO */
-    font-weight: 900; 
-    font-family: 'Courier New', monospace; 
-    letter-spacing: -1px; 
-    z-index: 2; 
-    margin: 5px 0; 
-    white-space: nowrap; 
-    overflow: hidden; 
-}
-
-/* Legendas menores */
-.cofre-box .legenda { 
-    font-size: 8px; /* Reduzido de 10px */
-    color: rgba(255,255,255,0.6); margin-top: 2px; font-weight: 700; 
-}
-
-/* Efeito de Fumaça (Ajustado para o novo tamanho) */
 .revolucionarios::before {
-    content: ''; position: absolute;
-    top: -15px; left: -15px; right: -15px; bottom: -15px; 
-    background-image: url('Imagens/revo-fumaça.png');
-    background-size: contain; background-position: center; background-repeat: no-repeat;
-    z-index: 0; opacity: 0.7; pointer-events: none;
-    animation: pulsarFumaca 4s infinite alternate ease-in-out;
-}
-
-/* HEADER DOS COFRES (Títulos) */
-.cofre-header { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; z-index: 2; margin-top: -5px; }
-.icone-faccao { font-size: 13px; opacity: 0.9; }
-.titulo-faccao { font-size: 13px; font-weight: 800; letter-spacing: 1.5px; color: #fff; text-transform: uppercase; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
-
-/* 3. Ajuste do Dinheiro para não vazar se ficar bilionário demais */
-.valor-dinheiro { 
-    font-size: clamp(14px, 1.2vw, 22px); /* Fonte levemente menor para garantir o encaixe */
-    font-weight: 900; font-family: 'Courier New', monospace; letter-spacing: -1px; z-index: 2; margin: 5px 0; 
-    background: linear-gradient(180deg, #fff 0%, #aaa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 8px rgba(255,255,255,0.5)); 
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-.governo-mundial .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #58a6ff 100%); -webkit-background-clip: text; filter: drop-shadow(0 0 8px rgba(88, 166, 255, 0.6)); }
-.revolucionarios .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #ff7b72 100%); -webkit-background-clip: text; filter: drop-shadow(0 0 8px rgba(218, 54, 51, 0.6)); }
-.submundo .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #56d364 100%); -webkit-background-clip: text; filter: drop-shadow(0 0 8px rgba(46, 160, 67, 0.6)); }
-.mercado-circulante .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #e3b341 100%); -webkit-background-clip: text; filter: drop-shadow(0 0 8px rgba(210, 153, 34, 0.6)); }
-
-.cofre-box .legenda { font-size: 10px; color: rgba(255,255,255,0.7); margin-top: 5px; font-weight: 700; text-transform: uppercase; z-index: 2; letter-spacing: 1px; }
-
-/* Mantém o efeito da fumaça aqui embaixo... */
-.revolucionarios::before {
-    content: ''; position: absolute;
-    top: -30px; left: -30px; right: -30px; bottom: -30px; 
-    background-image: url('Imagens/revo-fumaça.png');
-    background-size: contain; background-position: center; background-repeat: no-repeat;
-    z-index: 0; opacity: 0.85; pointer-events: none;
-    animation: pulsarFumaca 4s infinite alternate ease-in-out;
+    content: ''; position: absolute; top: -30px; left: -30px; right: -30px; bottom: -30px; 
+    background-image: url('Imagens/revo-fumaça.png'); background-size: contain; background-position: center; background-repeat: no-repeat;
+    z-index: 0; opacity: 0.85; pointer-events: none; animation: pulsarFumaca 4s infinite alternate ease-in-out;
 }
 @keyframes pulsarFumaca { from { transform: scale(1); opacity: 0.7; } to { transform: scale(1.05); opacity: 0.9; } }
 
-.cofre-header { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; z-index: 2; margin-top: -10px; }
+/* Textos e Ajustes de Posição dos Cofres */
+.cofre-header { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; z-index: 2; margin-top: -10px; position: relative; }
 .icone-faccao { font-size: 14px; opacity: 0.9; }
 .titulo-faccao { font-size: 14px; font-weight: 800; letter-spacing: 1.5px; color: #fff; text-transform: uppercase; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
 
 .valor-dinheiro { 
-    /* A mágica está aqui no clamp: a fonte varia entre 16px e 24px dependendo do espaço */
     font-size: clamp(16px, 1.5vw, 24px); 
     font-weight: 900; 
     font-family: 'Courier New', monospace; 
@@ -252,33 +112,80 @@ main {
     margin: 10px 0; 
     background: linear-gradient(180deg, #fff 0%, #aaa 100%); 
     -webkit-background-clip: text; 
+    background-clip: text; /* A CORREÇÃO ESTÁ AQUI */
     -webkit-text-fill-color: transparent; 
     filter: drop-shadow(0 0 8px rgba(255,255,255,0.5)); 
-    /* Isso garante que o número nunca quebre em duas linhas ou vaze */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    position: relative;
 }
-.governo-mundial .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #58a6ff 100%); -webkit-background-clip: text; filter: drop-shadow(0 0 8px rgba(88, 166, 255, 0.6)); }
-.revolucionarios .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #ff7b72 100%); -webkit-background-clip: text; filter: drop-shadow(0 0 8px rgba(218, 54, 51, 0.6)); }
-.submundo .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #56d364 100%); -webkit-background-clip: text; filter: drop-shadow(0 0 8px rgba(46, 160, 67, 0.6)); }
-.mercado-circulante .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #e3b341 100%); -webkit-background-clip: text; filter: drop-shadow(0 0 8px rgba(210, 153, 34, 0.6)); }
+.valor-dinheiro:contains("SIGILOSO") { 
+    font-size: 14px; color: #8b949e; letter-spacing: 2px; opacity: 0.7; -webkit-text-fill-color: #8b949e; background: none; filter: none; 
+}
 
-.cofre-box .legenda { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 5px; font-weight: 700; text-transform: uppercase; z-index: 2; letter-spacing: 1px; }
+.cofre-box .legenda { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 5px; font-weight: 700; text-transform: uppercase; z-index: 2; letter-spacing: 1px; position: relative; }
 
-/* ================= 4. MÓDULOS DE OPERAÇÃO ================= */
-.secao-operacional { background: rgba(22, 27, 34, 0.8); border: 1px solid #30363d; border-radius: 12px; padding: 15px 25px; margin-bottom: 20px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-.secao-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(48, 54, 61, 0.5); padding-bottom: 8px; }
-.secao-header h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #8b949e; }
-.controles-linha, .botoes-comando { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+/* Posições relativas ajustadas individualmente */
+.mercado-circulante .cofre-header { top: 10px; left: -5px; }
+.mercado-circulante .valor-dinheiro { top: 0px; left: -5px; }
+.mercado-circulante .legenda { top: 0px; left: 5px; }
+.governo-mundial .cofre-header { top: 15px; left: -5px; }
+.governo-mundial .valor-dinheiro { left: 0px; }
+.governo-mundial .legenda { top: -5px; left: 5px; }
+.revolucionarios .cofre-header { top: 15px; left: -5px; }
+.revolucionarios .valor-dinheiro { left: 5px; }
+.revolucionarios .legenda { top: -5px; left: 5px; }
+.submundo .cofre-header { top: 15px; left: 5px; }
+.submundo .valor-dinheiro { left: 10px; }
+.submundo .legenda { top: -5px; left: 20px; }
 
+/* Cores específicas dos Dinheiros (Com a correção aplicada em todas) */
+.governo-mundial .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #58a6ff 100%); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 8px rgba(88, 166, 255, 0.6)); }
+.revolucionarios .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #ff7b72 100%); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 8px rgba(218, 54, 51, 0.6)); }
+.submundo .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #56d364 100%); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 8px rgba(46, 160, 67, 0.6)); }
+.mercado-circulante .valor-dinheiro { background: linear-gradient(180deg, #fff 0%, #e3b341 100%); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 8px rgba(210, 153, 34, 0.6)); }
+
+
+
+/* ================= 4. MÓDULOS GLOBAIS (CAIXA E MOTOR) ================= */
+.despesa-global-area, #area-admin-acoes {
+    position: relative; overflow: hidden; background-color: rgba(30, 40, 55, 0.4); border: 1px solid rgba(88, 166, 255, 0.4); border-radius: 12px; margin-bottom: 30px; box-shadow: 0 0 15px rgba(88, 166, 255, 0.1), inset 0 0 15px rgba(255,255,255,0.03);
+}
+.despesa-global-area { padding: 20px 25px; }
+#area-admin-acoes { padding: 30px 25px; min-height: 180px; display: flex; flex-direction: column; justify-content: flex-start; }
+
+.despesa-global-area::before, #area-admin-acoes::before {
+    content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background-image: url('Imagens/radar.png'); background-position: right center; background-repeat: no-repeat; opacity: 0.7; pointer-events: none; z-index: 0;
+}
+.despesa-global-area::before { background-size: contain; -webkit-mask-image: linear-gradient(to right, transparent 30%, black 80%); mask-image: linear-gradient(to right, transparent 30%, black 80%); }
+#area-admin-acoes::before { background-size: cover; -webkit-mask-image: linear-gradient(to right, transparent 30%, black 80%); mask-image: linear-gradient(to right, transparent 30%, black 80%); }
+
+.despesa-global-area h3, #area-admin-acoes h2 { position: relative; z-index: 2; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #c9d1d9; margin-bottom: 15px; border-bottom: 1px solid rgba(88, 166, 255, 0.3); padding-bottom: 8px; text-shadow: 0 0 5px rgba(88, 166, 255, 0.5); }
+#area-admin-acoes h2 { margin-bottom: 25px; }
+
+.despesa-controles, #area-admin-acoes > div:first-of-type { position: relative; z-index: 2; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+#area-admin-acoes > div:first-of-type { justify-content: center; }
+
+#log-flutuacao { position: relative; z-index: 2; text-align: center; margin-top: 25px; color: #8b949e; font-size: 13px; font-style: italic; }
+
+/* Controles Base */
 input, select { background: #0d1117; color: var(--texto-principal); border: 1px solid var(--borda-suave); padding: 10px 12px; border-radius: 8px; transition: all 0.3s; font-size: 13px; }
 input:focus, select:focus { outline: none; border-color: var(--cor-acao); box-shadow: 0 0 8px rgba(88, 166, 255, 0.3); }
 
-/* BOTÕES (GERAL E ANIMAÇÕES) */
+/* Switch Transação */
+.switch-container { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.switch { position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--dinheiro-negativo); transition: .4s; border-radius: 24px; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+input:checked + .slider { background-color: var(--cor-acao); box-shadow: 0 0 10px var(--cor-acao); }
+input:checked + .slider:before { transform: translateX(22px); }
+#texto-transacao { font-weight: 700; font-size: 13px; transition: color 0.3s ease; }
+
+/* Botões Globais */
 button { font-weight: 700; border: none; border-radius: 8px; padding: 10px 18px; cursor: pointer; transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); color: #fff; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid rgba(255, 255, 255, 0.1); }
 button:active { transform: scale(0.95); }
-
 .btn-sucesso { background: var(--dinheiro-positivo); }
 .btn-sucesso:hover { background: #3fb950; box-shadow: 0 0 15px rgba(46, 160, 67, 0.5); transform: translateY(-2px); }
 .btn-perigoso { background: var(--dinheiro-negativo); }
@@ -287,157 +194,78 @@ button:active { transform: scale(0.95); }
 .btn-auditoria:hover { background: #8b949e; color: #000; }
 .btn-caixa { background: var(--cor-acao); }
 .btn-caixa:hover { background: #388bfd; box-shadow: 0 0 15px rgba(31, 111, 235, 0.5); transform: translateY(-2px); }
+.despesa-controles button { 
+    background: rgba(88, 166, 255, 0.1); 
+    border: 1px solid #58a6ff; 
+    color: #58a6ff; 
+    font-weight: 900; 
+    padding: 10px 20px;
+}
+.despesa-controles button:hover { background: #58a6ff; color: #000; box-shadow: 0 0 15px rgba(88, 166, 255, 0.6); transform: translateY(-2px); }
 
-/* Animação Ampulheta */
 #btn-virar-mes:hover::before { content: '⏳ '; display: inline-block; animation: rotateHourglass 1.2s infinite linear; }
 @keyframes rotateHourglass { from { transform: rotate(0deg); } to { transform: rotate(180deg); } }
-
-/* Animação Botão Reset */
 button[onclick*="Reset"] { position: relative; overflow: hidden; background: linear-gradient(to right, #8b0000, #ff4d4d); }
 button[onclick*="Reset"]:hover { box-shadow: 0 0 20px #ff4d4d; animation: pulseNuclear 1s infinite alternate; }
 @keyframes pulseNuclear { from { opacity: 1; } to { opacity: 0.7; } }
 
+/* ================= 5. FICHAS DAS ILHAS ================= */
+.grid-ilhas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 50px 25px; margin-top: 60px; }
 
-/* =======================================================
-   MÓDULO: FICHAS DAS ILHAS (OVERFLOW E INTEGRAÇÃO)
-   ======================================================= */
+.card-ilha-horizontal { background: none; border: 1px solid rgba(88, 166, 255, 0.2); border-radius: 16px; position: relative; overflow: visible; display: flex; min-height: 200px; transition: all 0.3s ease; }
 
-.grid-ilhas { 
-    display: grid; 
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 50px 25px; /* Aumentado para acomodar a ilha que foge pelo topo */
-    margin-top: 60px;
-}
-
-.card-ilha-horizontal { 
-    background: none;
-    border: 1px solid rgba(88, 166, 255, 0.2); 
-    border-radius: 16px; 
-    position: relative; 
-    overflow: visible; /* Permite que a ilha saia do card */
-    display: flex;
-    min-height: 200px;
-    transition: all 0.3s ease;
-}
-
-/* Camada de Integração: Funde o card com o "mar" ao redor da ilha */
 .ilha-bg-gradient {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    /* Gradiente que transita do sólido para o transparente na zona da ilha */
-    background: linear-gradient(to right, 
-        rgba(13, 17, 23, 0.98) 0%, 
-        rgba(26, 44, 61, 0.95) 50%, 
-        rgba(26, 44, 61, 0) 100%
-    );
-    border-radius: 16px;
-    z-index: 0;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to right, rgba(13, 17, 23, 0.98) 0%, rgba(26, 44, 61, 0.95) 50%, rgba(26, 44, 61, 0) 100%);
+    border-radius: 16px; z-index: 0;
 }
 
-.ilha-info-lateral {
-    flex: 1;
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    /* justify-content: space-between agora vai garantir que o título fique no topo e botões na base */
-    justify-content: space-between; 
-    z-index: 2;
-    max-width: 60%;
+.ilha-info-lateral { flex: 1; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; z-index: 2; max-width: 60%; }
+.ilha-dados { margin-top: 10px; margin-bottom: auto; }
+/* Linhas de Informação (Alinhadas à esquerda e sem pontilhado) */
+/* Linhas de Informação */
+.info-linha { 
+    display: flex; 
+    justify-content: flex-start; 
+    align-items: center; /* Trava o título e o valor exatamente na mesma altura */
+    gap: 6px; 
+    font-size: 13px; 
+    margin-bottom: 8px; 
 }
 
-.ilha-dados {
-    margin-top: 10px;
-    margin-bottom: auto; /* Empurra tudo que estiver abaixo (botões) para o final */
-}
-
-/* A ARTE DA ILHA (Saindo da moldura) */
-.ilha-arte-overflow {
-    position: absolute;
-    right: -15px; 
-    bottom: -5px;
-    width: 65%; 
-    height: 140%; /* Faz a ilha ser mais alta que o card */
-    background-size: contain;
-    background-position: bottom right;
-    background-repeat: no-repeat;
-    z-index: 1;
-    
-    /* Máscara Dupla: Suaviza a esquerda (integração) e o topo (fuga do card) */
-    -webkit-mask-image: linear-gradient(to top, black 85%, transparent 100%), 
-                        linear-gradient(to right, transparent 0%, black 35%);
-    mask-image: linear-gradient(to top, black 85%, transparent 100%), 
-                linear-gradient(to right, transparent 0%, black 35%);
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
-    
-    filter: drop-shadow(-15px 0 20px rgba(0,0,0,0.6));
-}
-
-.ilha-cabecalho h3 { 
-    font-size: 20px; 
-    color: #fff; 
-    font-weight: 800; 
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
+/* Tira a margem do dinheiro APENAS quando ele estiver dentro da listinha, para não quebrar a linha */
+.info-linha .valor-dinheiro {
     margin: 0;
 }
 
-/* BOTÕES ESTILO VIDRO/METAL */
-.ilha-botoes {
-    display: flex;
-    gap: 10px;
-    z-index: 3;
-    padding-top: 15px;
-    /* Uma linha sutil que parece um feixe de luz ou metal escovado */
-    border-top: 1px solid rgba(88, 166, 255, 0.2); 
-    position: relative;
+.ilha-arte-overflow {
+    position: absolute; right: -15px; bottom: -5px; width: 65%; height: 140%; background-size: contain; background-position: bottom right; background-repeat: no-repeat; z-index: 1;
+    -webkit-mask-image: linear-gradient(to top, black 85%, transparent 100%), linear-gradient(to right, transparent 0%, black 35%);
+    mask-image: linear-gradient(to top, black 85%, transparent 100%), linear-gradient(to right, transparent 0%, black 35%);
+    -webkit-mask-composite: source-in; mask-composite: intersect; filter: drop-shadow(-15px 0 20px rgba(0,0,0,0.6));
+    pointer-events: none;
 }
 
+.ilha-cabecalho { 
+    display: flex; 
+    flex-direction: column; /* Empilha um em cima do outro */
+    align-items: flex-start; /* Alinha tudo na esquerda */
+    margin-bottom: 15px; 
+    gap: 4px; /* Espaçamento perfeito entre o nome e o alinhamento */
+}
+.ilha-cabecalho h3 { font-size: 20px; color: #fff; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.8); margin: 0; }
+
+.ilha-botoes { display: flex; gap: 10px; z-index: 3; padding-top: 15px; border-top: 1px solid rgba(88, 166, 255, 0.2); position: relative; }
 .btn-ilha-glass {
-    background: linear-gradient(180deg, rgba(60,65,75,0.85) 0%, rgba(30,35,45,0.85) 100%);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 8px;
-    color: #d3d9e1;
-    padding: 8px 15px;
-    font-size: 11px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.4);
+    background: linear-gradient(180deg, rgba(60,65,75,0.85) 0%, rgba(30,35,45,0.85) 100%); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; color: #d3d9e1; padding: 8px 15px; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.4);
 }
+.btn-ilha-glass:hover { background: linear-gradient(180deg, rgba(80,85,95,0.95) 0%, rgba(40,45,55,0.95) 100%); border-color: rgba(255,255,255,0.3); transform: translateY(-1px); }
+.btn-ilha-glass.highlight { border-color: rgba(88, 166, 255, 0.4); box-shadow: 0 0 10px rgba(88, 166, 255, 0.2); }
 
-.btn-ilha-glass:hover {
-    background: linear-gradient(180deg, rgba(80,85,95,0.95) 0%, rgba(40,45,55,0.95) 100%);
-    border-color: rgba(255,255,255,0.3);
-    transform: translateY(-1px);
-}
-
-.btn-ilha-glass.highlight {
-    border-color: rgba(88, 166, 255, 0.4);
-    box-shadow: 0 0 10px rgba(88, 166, 255, 0.2);
-}
 /* ================= 6. MODAIS E LOGS ================= */
 .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(5, 7, 10, 0.8); backdrop-filter: blur(10px); animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.modal-content { 
-    background: rgba(13, 17, 23, 0.95); /* Vidro fumê escuro */
-    backdrop-filter: blur(20px); 
-    margin: 4% auto; 
-    padding: 30px; 
-    border: 1px solid rgba(88, 166, 255, 0.4); /* Borda Azul Neon Tech */
-    border-radius: 12px; 
-    box-shadow: 0 0 30px rgba(0,0,0,0.9), 0 0 20px rgba(88, 166, 255, 0.1); 
-    position: relative; 
-    animation: slideDownFade 0.4s cubic-bezier(0.25, 1, 0.25, 1); 
-    
-    /* MANTÉM A CORREÇÃO DO BUG DO SCROLL */
-    max-height: 85vh; 
-    overflow-y: auto; 
-}
-
-/* Estilizando a barra de rolagem do modal para manter o visual tecnológico */
+.modal-content { background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(20px); margin: 4% auto; padding: 30px; border: 1px solid rgba(88, 166, 255, 0.4); border-radius: 12px; box-shadow: 0 0 30px rgba(0,0,0,0.9), 0 0 20px rgba(88, 166, 255, 0.1); position: relative; animation: slideDownFade 0.4s cubic-bezier(0.25, 1, 0.25, 1); max-height: 85vh; overflow-y: auto; }
 .modal-content::-webkit-scrollbar { width: 8px; }
 .modal-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 8px; }
 .modal-content::-webkit-scrollbar-thumb { background: var(--cor-acao); border-radius: 8px; }
@@ -448,351 +276,29 @@ button[onclick*="Reset"]:hover { box-shadow: 0 0 20px #ff4d4d; animation: pulseN
 .form-group { display: flex; flex-direction: column; }
 .form-group label { font-size: 11px; color: var(--texto-secundario); margin-bottom: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2px; }
 
-/* Log de Auditoria (Estilo Terminal Hacker/Militar) */
-.terminal-log { 
-    background: #010409; 
-    color: #c9d1d9; 
-    font-family: 'Courier New', Courier, monospace; 
-    padding: 20px; 
-    border-radius: 8px; 
-    border: 1px solid rgba(88, 166, 255, 0.2); 
-    border-left: 4px solid #58a6ff; /* Destaque lateral azul */
-    font-size: 12px; 
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.8); 
-    height: 450px; 
-    overflow-y: auto;
-}
-.terminal-log div { 
-    margin-bottom: 8px; 
-    border-bottom: 1px dashed rgba(88, 166, 255, 0.15); 
-    padding-bottom: 6px; 
-}
+/* Log de Auditoria */
+.terminal-log { background: #010409; color: #c9d1d9; font-family: 'Courier New', Courier, monospace; padding: 20px; border-radius: 8px; border: 1px solid rgba(88, 166, 255, 0.2); border-left: 4px solid #58a6ff; font-size: 12px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); height: 450px; overflow-y: auto; }
+.terminal-log div { margin-bottom: 8px; border-bottom: 1px dashed rgba(88, 166, 255, 0.15); padding-bottom: 6px; }
 
-/* Histórico de Meses (Estilo Arquivo Confidencial) */
-.log-mes-card { 
-    background: rgba(0, 0, 0, 0.4); 
-    border-left: 4px solid var(--faccao-governo); 
-    padding: 18px; 
-    margin-bottom: 18px; 
-    border-radius: 8px; 
-    border: 1px solid rgba(255,255,255,0.05); 
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-.log-mes-card h4 { 
-    color: #fff; 
-    margin-bottom: 12px; 
-    font-size: 16px; 
-    font-family: 'Courier New', monospace; 
-    border-bottom: 1px solid rgba(88, 166, 255, 0.3); 
-    padding-bottom: 8px; 
-    letter-spacing: 1px;
-}
-.log-mes-card p { 
-    font-size: 13px; 
-    margin-bottom: 6px; 
-    color: #d3d9e1;
-}
-    
+/* Histórico de Meses */
+.log-mes-card { background: rgba(0, 0, 0, 0.4); border-left: 4px solid var(--faccao-governo); padding: 18px; margin-bottom: 18px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+.log-mes-card h4 { color: #fff; margin-bottom: 12px; font-size: 16px; font-family: 'Courier New', monospace; border-bottom: 1px solid rgba(88, 166, 255, 0.3); padding-bottom: 8px; letter-spacing: 1px; }
+.log-mes-card p { font-size: 13px; margin-bottom: 6px; color: #d3d9e1; }
+
 .escondido { display: none !important; }
 
-/* ================= PAINEL DE RELATÓRIO DE REPASSES ================= */
-#painel-relatorio {
-    background-color: rgba(30, 40, 55, 0.4);
-    border: 1px solid rgba(88, 166, 255, 0.3);
-    border-radius: 12px;
-    padding: 20px 25px;
-    margin-bottom: 30px;
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
-}
+/* ================= 7. RELATÓRIO DE REPASSES ================= */
+#painel-relatorio { background-color: rgba(30, 40, 55, 0.4); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 12px; padding: 20px 25px; margin-bottom: 30px; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+#painel-relatorio h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #c9d1d9; margin-bottom: 15px; border-bottom: 1px solid rgba(88, 166, 255, 0.3); padding-bottom: 8px; }
 
-#painel-relatorio h3 {
-    font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #c9d1d9;
-    margin-bottom: 15px; border-bottom: 1px solid rgba(88, 166, 255, 0.3); padding-bottom: 8px;
-}
-
-.grid-repasses {
-    display: flex;
-    flex-wrap: wrap; /* Se tiver muitos players, joga pra linha de baixo automaticamente */
-    gap: 15px;
-}
-
-.repasse-card {
-    /* Fundo com leve tom esverdeado de "dinheiro recebido" */
-    background: linear-gradient(135deg, rgba(46, 160, 67, 0.1) 0%, rgba(30, 40, 55, 0.6) 100%);
-    border: 1px solid rgba(46, 160, 67, 0.3);
-    border-radius: 8px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    min-width: 220px;
-    flex: 1; /* Faz os cards crescerem para preencher o espaço vazio */
-}
-
-.repasse-card.nulo {
-    background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);
-    align-items: center; color: #888; font-style: italic;
-}
-
+.grid-repasses { display: flex; flex-wrap: wrap; gap: 15px; }
+.repasse-card { background: linear-gradient(135deg, rgba(46, 160, 67, 0.1) 0%, rgba(30, 40, 55, 0.6) 100%); border: 1px solid rgba(46, 160, 67, 0.3); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 5px; min-width: 220px; flex: 1; }
+.repasse-card.nulo { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); align-items: center; color: #888; font-style: italic; }
 .lider-nome { font-size: 11px; color: #8b949e; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
 .lider-valor { font-size: 18px; color: #3fb950; font-weight: 900; text-shadow: 0 0 8px rgba(46, 160, 67, 0.3); }
 
-/* =======================================================
-   AJUSTE FINO (POSICIONAMENTO RELATIVO - NÃO DISTORCE A IMAGEM)
-   ======================================================= */
-
-/* --- MERCADO CIRCULANTE --- */
-.mercado-circulante .cofre-header {
+/* Proteção da Área de Pesquisa e Filtro */
+.filtro-area, input#busca-nome, select#filtro-regiao {
     position: relative;
-    top: 10px;     /* Valores negativos sobem o texto */
-    left: -5px;   /* Valores negativos puxam para a ESQUERDA (em direção ao navio) */
-}
-
-.mercado-circulante .valor-dinheiro {
-    position: relative;
-    top: 0px;      
-    left: -5px;   /* Alinhando o dinheiro com o título na esquerda */
-}
-
-.mercado-circulante .legenda {
-    position: relative;
-    top: 0px;      /* Valores positivos descem o texto */
-    left: 5px;   /* Alinhando a legenda na esquerda também */
-}
-
-/* --- MARY GEOISE --- */
-.governo-mundial .cofre-header {
-    position: relative;
-    top: 15px; 
-    left: -5px; 
-}
-.governo-mundial .valor-dinheiro {
-    position: relative;
-    left: 0px; 
-}
-.governo-mundial .legenda {
-    position: relative;
-    top: -5px;
-    left: 5px; 
-}
-
-/* --- EXÉRCITO REVO --- */
-.revolucionarios .cofre-header {
-    position: relative;
-    top: 15px; 
-    left: -5px; /* Empurra um pouquinho pra direita se o punho estiver muito perto */
-}
-.revolucionarios .valor-dinheiro {
-    position: relative;
-    left: 5px; 
-}
-.revolucionarios .legenda {
-    position: relative;
-    top: -5px; 
-    left: 5px;
-}
-
-/* --- SUBMUNDO (MÁFIA) --- */
-.submundo .cofre-header {
-    position: relative;
-    top: 15px;
-    left: 5px; /* Puxa para a esquerda fugindo da caveira */
-}
-.submundo .valor-dinheiro {
-    position: relative;
-    left: 10px; 
-}
-.submundo .legenda {
-    position: relative;
-    top: -5px;
-    left: 20px;
-}
-
-/* =======================================================
-   MÓDULO: CAIXA GLOBAL (MOVIMENTAR DINHEIRO)
-   ======================================================= */
-
-/* =======================================================
-   MÓDULO: CAIXA GLOBAL (MOVIMENTAR DINHEIRO)
-   ======================================================= */
-
-.despesa-global-area {
-    position: relative; /* Essencial para a camada fantasma funcionar */
-    overflow: hidden; /* Corta a imagem do radar para não vazar pelas bordas arredondadas */
-    
-    /* 1. O Fundo mais Claro e Translúcido */
-    background-color: rgba(30, 40, 55, 0.4); 
-    
-    /* 2. Borda Brilhante e Efeito Neon */
-    border: 1px solid rgba(88, 166, 255, 0.4); /* Borda azul clara sutil */
-    border-radius: 12px;
-    padding: 20px 25px;
-    margin-bottom: 20px;
-    
-    /* Sombra externa (Glow) e sombra interna para dar volume */
-    box-shadow: 0 0 15px rgba(88, 166, 255, 0.1), inset 0 0 15px rgba(255,255,255,0.03);
-}
-
-/* A CAMADA FANTASMA (Onde a mágica da imagem acontece) */
-.despesa-global-area::before {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0; /* Ocupa a caixa toda */
-    
-    background-image: url('Imagens/radar.png'); /* Sua imagem do radar */
-    background-position: right center;
-    background-repeat: no-repeat;
-    background-size: contain; 
-    
-    /* 🎛️ DIMINUIR A OPACIDADE GERAL (0.1 é quase invisível, 1.0 é cor original) */
-    opacity: 0.7; 
-    
-    /* 🎛️ EFEITO ESFUMAÇADO NA ESQUERDA (Máscara de Gradiente) */
-    -webkit-mask-image: linear-gradient(to right, transparent 30%, black 80%);
-    mask-image: linear-gradient(to right, transparent 30%, black 80%);
-    
-    pointer-events: none; /* Garante que a imagem não bloqueie seus cliques */
-    z-index: 0; /* Joga a imagem pro fundo */
-}
-
-/* O Título da Caixa */
-.despesa-global-area h3 {
-    position: relative; z-index: 2; /* Mantém o texto acima da imagem */
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #c9d1d9; /* Cor do texto mais clara e legível */
-    margin-bottom: 15px;
-    border-bottom: 1px solid rgba(88, 166, 255, 0.3); /* Linha divisória combinando com a borda */
-    padding-bottom: 8px;
-    text-shadow: 0 0 5px rgba(88, 166, 255, 0.5); /* Leve brilho no título */
-}
-
-/* A Linha onde ficam os inputs e botões */
-.despesa-controles {
-    position: relative; z-index: 2; /* Mantém os botões acima da imagem */
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.despesa-controles button {
-    background: rgba(88, 166, 255, 0.1); 
-    border: 1px solid #58a6ff; 
-    color: #58a6ff;
-    font-weight: 800;
-    padding: 10px 20px;
-    border-radius: 6px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.despesa-controles button:hover {
-    background: #58a6ff;
-    color: #000; /* Texto escuro para dar alto contraste no hover */
-    box-shadow: 0 0 15px rgba(88, 166, 255, 0.6);
-    transform: translateY(-2px);
-}
-
-/* ================= SWITCH ANIMADO (CAIXA GLOBAL) ================= */
-.switch-container { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
-.switch { position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0; }
-.switch input { opacity: 0; width: 0; height: 0; }
-
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--dinheiro-negativo); transition: .4s; border-radius: 24px; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
-.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-
-/* Quando Ativado (Pagar - Azul) */
-input:checked + .slider { background-color: var(--cor-acao); box-shadow: 0 0 10px var(--cor-acao); }
-input:checked + .slider:before { transform: translateX(22px); }
-
-#texto-transacao { font-weight: 700; font-size: 13px; transition: color 0.3s ease; }
-
-/* =======================================================
-   MÓDULO: MOTOR DO TEMPO E AUDITORIA
-   ======================================================= */
-
-#area-admin-acoes {
-    position: relative;
-    overflow: hidden;
-    background-color: rgba(30, 40, 55, 0.4);
-    border: 1px solid rgba(88, 166, 255, 0.4);
-    border-radius: 12px;
-    padding: 30px 25px; 
-    margin-bottom: 30px;
-    min-height: 180px; 
-    
-    box-shadow: 0 0 15px rgba(88, 166, 255, 0.1), inset 0 0 15px rgba(255,255,255,0.03);
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Alinha o conteúdo no topo para o título ficar no lugar certo */
-}
-
-/* A CAMADA FANTASMA DO RADAR */
-#area-admin-acoes::before {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    
-    background-image: url('Imagens/radar.png');
-    background-position: right center;
-    background-repeat: no-repeat;
-    
-    /* AQUI ESTÁ A MÁGICA: cover obriga a imagem a preencher todos os cantos sem deixar bordas vazias */
-    background-size: cover; 
-    
-    opacity: 0.7;
-    -webkit-mask-image: linear-gradient(to right, transparent 30%, black 80%);
-    mask-image: linear-gradient(to right, transparent 30%, black 80%);
-    
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* Título do Motor do Tempo */
-#area-admin-acoes h2 {
-    position: relative;
-    z-index: 2;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #c9d1d9;
-    margin-bottom: 25px; 
-    border-bottom: 1px solid rgba(88, 166, 255, 0.3);
-    padding-bottom: 8px;
-    text-shadow: 0 0 5px rgba(88, 166, 255, 0.5);
-    text-align: left; 
-}
-
-/* O contêiner dos botões (para garantir que eles fiquem no meio) */
-#area-admin-acoes > div:first-of-type {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap; /* Caso a tela seja pequena, os botões quebram a linha com elegância */
-}
-
-/* O Texto "Aguardando comando..." */
-#log-flutuacao {
-    position: relative;
-    z-index: 2;
-    text-align: center; /* Centraliza o texto */
-    margin-top: 25px; /* Empurra ele para baixo, longe dos botões */
-    color: #8b949e;
-    font-size: 13px;
-    font-style: italic;
-}
-
-/* Estilo para quando o valor está escondido para o player */
-.valor-dinheiro:contains("SIGILOSO") {
-    font-size: 14px;
-    color: #8b949e; /* Um cinza mais escuro */
-    letter-spacing: 2px;
-    opacity: 0.7;
+    z-index: 100; /* Força os botões de busca a ficarem acima das artes */
 }

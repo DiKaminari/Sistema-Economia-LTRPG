@@ -261,7 +261,7 @@ function calcularCustosIlha(ilha) {
     if (ilha.gestao === "Tirânica") { multGestao = 0.5; sangramentoBase -= 10; }
     if (ilha.gestao === "Extrativista") { sangramentoBase -= 15; }
     if (ilha.gestao === "Caótica") { sangramentoBase -= 20; }
-    if (ilha.gestao === "Benevolente") { multGestao = 1.5; sangramentoBase += 10; }
+    if (ilha.gestao === "Benevolente") { multGestao = 1.4; sangramentoBase += 10; }
     if (ilha.gestao === "Militarizada") { multGestao = 2.0; sangramentoBase += 5; }
     if (ilha.densidade === "Alta") sangramentoBase -= 5; 
 
@@ -543,23 +543,37 @@ function adicionarModMemoria() {
     if (idxEdit >= 0) modsTemporarios[idxEdit] = novoMod; else modsTemporarios.push(novoMod);
     document.getElementById("add-mod-nome").value = ""; document.getElementById("add-mod-manu-perc").value = "0"; document.getElementById("add-mod-renda-perc").value = "0"; document.getElementById("add-mod-prod-perc").value = "0"; document.getElementById("add-mod-estabilidade").value = "0"; document.getElementById("add-mod-manu-fixo").value = "0"; document.getElementById("add-mod-renda-fixo").value = "0"; document.getElementById("edit-mod-index").value = "-1"; renderizarRecursosForm();
 }
-function editarRecursoMemoria(idx) {
-    let rec = recursosTemporarios[idx];
-    document.getElementById("add-rec-nome").value = rec.nome; 
-    document.getElementById("add-rec-tipo").value = rec.tipo; 
-    document.getElementById("add-rec-foco").value = rec.foco; 
-    document.getElementById("add-rec-prod").value = rec.producao_mensal; 
-    document.getElementById("add-rec-valor").value = rec.valor_base; 
-    document.getElementById("edit-rec-index").value = idx; 
-    document.getElementById("btn-salvar-rec").innerText = "💾 Ok";
-    verificarTipoRecurso(); 
+
+function editarModMemoria(idx) {
+    let mod = modsTemporarios[idx];
+    document.getElementById("add-mod-nome").value = mod.nome; document.getElementById("add-mod-manu-perc").value = mod.mod_manutencao_perc; document.getElementById("add-mod-renda-perc").value = mod.mod_renda_perc; document.getElementById("add-mod-prod-perc").value = mod.mod_prod_perc; document.getElementById("add-mod-estabilidade").value = mod.mod_estabilidade; document.getElementById("add-mod-manu-fixo").value = mod.mod_manutencao_fixa; document.getElementById("add-mod-renda-fixo").value = mod.mod_renda_fixa; document.getElementById("edit-mod-index").value = idx;
 }
+
 function removerModMemoria(idx) { modsTemporarios.splice(idx, 1); renderizarRecursosForm(); }
+
+function adicionarRecursoMemoria() {
+    const idxEdit = parseInt(document.getElementById("edit-rec-index").value);
+    const nome = document.getElementById("add-rec-nome").value; const tipo = document.getElementById("add-rec-tipo").value; const foco = document.getElementById("add-rec-foco").value;
+    const prod = parseInt(document.getElementById("add-rec-prod").value); const valor = parseInt(document.getElementById("add-rec-valor").value);
+    if (!nome || isNaN(prod) || isNaN(valor)) return alert("Preencha corretamente.");
+    
+    let novoRec = { nome, tipo, foco, producao_mensal: prod, estoque_acumulado: prod, estoque_transito: 0, valor_base: valor };
+    if (idxEdit >= 0) { 
+        novoRec.estoque_acumulado = recursosTemporarios[idxEdit].estoque_acumulado; 
+        novoRec.estoque_transito = recursosTemporarios[idxEdit].estoque_transito || 0; 
+        recursosTemporarios[idxEdit] = novoRec; 
+    } else { 
+        recursosTemporarios.push(novoRec); 
+    }
+    
+    document.getElementById("add-rec-nome").value = ""; document.getElementById("add-rec-prod").value = ""; document.getElementById("add-rec-valor").value = ""; document.getElementById("edit-rec-index").value = "-1"; document.getElementById("btn-salvar-rec").innerText = "➕ Add"; resetarCamposRecurso(); renderizarRecursosForm();
+}
 
 function editarRecursoMemoria(idx) {
     let rec = recursosTemporarios[idx];
-    document.getElementById("add-rec-nome").value = rec.nome; document.getElementById("add-rec-tipo").value = rec.tipo; document.getElementById("add-rec-foco").value = rec.foco; document.getElementById("add-rec-prod").value = rec.producao_mensal; document.getElementById("add-rec-valor").value = rec.valor_base; document.getElementById("edit-rec-index").value = idx; 
+    document.getElementById("add-rec-nome").value = rec.nome; document.getElementById("add-rec-tipo").value = rec.tipo; document.getElementById("add-rec-foco").value = rec.foco; document.getElementById("add-rec-prod").value = rec.producao_mensal; document.getElementById("add-rec-valor").value = rec.valor_base; document.getElementById("edit-rec-index").value = idx; document.getElementById("btn-salvar-rec").innerText = "💾 Ok"; verificarTipoRecurso(); 
 }
+
 function removerRecursoMemoria(idx) { recursosTemporarios.splice(idx, 1); renderizarRecursosForm(); }
 
 function abrirFormIlha(id = null) {

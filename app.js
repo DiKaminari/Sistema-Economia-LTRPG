@@ -12,7 +12,7 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 // === Nomes com privilégio total de Admin ===
-const administradores = ["Diego Kaminari", "Admin Teste 1", "Admin Teste 2"];
+const administradores = ["Diego Kaminari"];
 
 // === VARIÁVEIS DE ESTADO (Agora vêm do Banco de Dados) ===
 let tesouroGoverno = 90000000000000; 
